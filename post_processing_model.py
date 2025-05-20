@@ -34,7 +34,7 @@ class TransformerQA(nn.Module):
           x = self.embedding(input_ids) + self.positional_encoding[:, :input_ids.size(1), :]
 
           if attention_mask is not None:
-              key_padding_mask = attention_mask == 0  # [batch, seq_len]
+              key_padding_mask = attention_mask == 0 
           else:
               key_padding_mask = None
 
