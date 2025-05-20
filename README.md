@@ -1,8 +1,8 @@
-## 🧠 Turkish Legal QA System
+# 🧠 Turkish Legal QA System
 
 This repository contains a custom-trained Transformer-based Question Answering (QA) system built for Turkish legal texts. The system is capable of training on a custom tokenizer and dataset, and post-processing predictions using a large language model (LLaMA 3 via Groq API) and translation to provide clearer Turkish responses.
 
-# 📁 Files Overview
+## 📁 Files Overview
 model_training.py
 
 This script handles training a Transformer-based QA model using PyTorch.
@@ -37,7 +37,7 @@ This script loads the trained model and performs prediction, followed by respons
 
 - Translation: Uses deep_translator to convert the refined English output back into Turkish.
 
-# 🚀 How to Use
+## 🚀 How to Use
 1. Train the model:
 
 python model_training.py
@@ -52,13 +52,13 @@ Install dependencies:
 
     pip install torch transformers groq deep-translator
 
-# 🔐 API Key
+## 🔐 API Key
 
 The Groq API key is hardcoded in the script for demo purposes. For production, I recommend you to store it securely using environment variables or .env files.
 
 You can get it free from here (https://console.groq.com/home)
 
-# 📌 Notes
+## 📌 Notes
 
 This model performs best on questions found in the training dataset.
 
