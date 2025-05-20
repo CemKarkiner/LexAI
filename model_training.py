@@ -1,5 +1,5 @@
 import os
-# CUDA hatalarını hemen raporlamak için:
+
 os.environ["CUDA_LAUNCH_BLOCKING"] = "0"
 import matplotlib.pyplot as plt
 import torch
@@ -12,8 +12,6 @@ from torch.utils.data import DataLoader, Dataset
 
 device = torch.device('cuda')
 
-
-# Model tanımı
 class TransformerQA(nn.Module):
     def __init__(self, vocab_size, d_model, nhead, num_layers):
         super(TransformerQA, self).__init__()
@@ -43,9 +41,6 @@ class TransformerQA(nn.Module):
         start_logits, end_logits = logits.split(1, dim=-1)
         return start_logits.squeeze(-1), end_logits.squeeze(-1)
 
-
-
-# Dataset sınıfı
 class QADataset(Dataset):
     def __init__(self, data, tokenizer, max_length=512):
         self.data = data
@@ -98,21 +93,16 @@ class QADataset(Dataset):
             "end_positions": torch.tensor(end_token)
         }
 
-# Tokenizer'ı JSON dosyasından yükleme
-tokenizer = PreTrainedTokenizerFast(tokenizer_file=r"C:\Users\ASUS\Desktop\LexAI\trained_tokenizer.json")
+tokenizer = PreTrainedTokenizerFast(tokenizer_file="trained_tokenizer.json")
 
-
-# Padding token'ını ekleyin, eğer yoksa
 if tokenizer.pad_token is None:
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
-
-# Veri yükleme
 with open("final_enriched_dataset_original_format.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
 
-# Hyperparametreler
+# Hyperparametres
 vocab_size = len(tokenizer) 
 d_model = 512
 nhead = 8
@@ -123,12 +113,10 @@ patience = 5
 best_val_loss = float("inf")
 patience_counter = 0
 
-# Modeli oluşturma
 model = TransformerQA(vocab_size, d_model, nhead, num_layers).to(device)
 optimizer = optim.Adam(model.parameters(), lr=1e-6)
 loss_fn = nn.CrossEntropyLoss()
 
-# Veri kümesi hazırlığı
 train_data = data[:int(0.8 * len(data))]
 val_data = data[int(0.8 * len(data)):]
 train_dataset = QADataset(train_data, tokenizer)
@@ -136,7 +124,7 @@ val_dataset = QADataset(val_data, tokenizer)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
 
-# F1 skoru hesaplama
+# F1 score calculation
 def compute_f1(pred_start, pred_end, true_start, true_end):
     f1s = []
     for ps, pe, ts, te in zip(pred_start, pred_end, true_start, true_end):
@@ -158,7 +146,7 @@ def compute_f1(pred_start, pred_end, true_start, true_end):
 train_losses = []
 val_losses = []
 
-# Eğitim döngüsü ve Early Stopping
+# Training Loop
 while(True):
     model.train()
     total_loss = 0
@@ -231,7 +219,7 @@ while(True):
             break
     epoch += 1
 
-# Eğitim ve doğrulama kaybını çizme
+# Stat visualization
 plt.figure(figsize=(10, 6))
 plt.plot(train_losses, label='Train Loss', marker='o')
 plt.plot(val_losses, label='Validation Loss', marker='o')
