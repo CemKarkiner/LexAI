@@ -1,5 +1,5 @@
 import os
-# CUDA hatalarını hemen raporlamak için:
+
 os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 import warnings
 warnings.filterwarnings("ignore")
@@ -13,14 +13,10 @@ from groq import Groq
 from deep_translator import GoogleTranslator
 
 
-
-client = Groq(api_key="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")
-
+client = Groq(api_key="groq API KEY")
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-
-# Model tanımı
 class TransformerQA(nn.Module):
     def __init__(self, vocab_size, d_model, nhead, num_layers):
         super(TransformerQA, self).__init__()
@@ -48,9 +44,6 @@ class TransformerQA(nn.Module):
           start_logits, end_logits = logits.split(1, dim=-1)
           return start_logits.squeeze(-1), end_logits.squeeze(-1)
 
-
-
-# Dataset sınıfı
 class QADataset(Dataset):
     def __init__(self, data, tokenizer, max_length=512):
         self.data = data
@@ -103,7 +96,6 @@ class QADataset(Dataset):
             "end_positions": torch.tensor(end_token)
         }
 
-# Tokenizer'ı JSON dosyasından yükleme
 tokenizer = PreTrainedTokenizerFast(
     tokenizer_file="trained_tokenizer.json",
     unk_token="[UNK]",
@@ -114,23 +106,20 @@ tokenizer = PreTrainedTokenizerFast(
     model_max_length=512
 )
 
-# Padding token'ını ekleyin, eğer yoksa
 if tokenizer.pad_token is None:
     tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 
-# Hyperparametreler
+# Hyperparametres
 vocab_size = len(tokenizer)  # Burada tekrar güncelle
 d_model = 256
 nhead = 8
 num_layers = 4
 batch_size = 4
 epochs = 100
-patience = 5  # Early stopping için sabır
+patience = 5
 best_val_loss = float("inf")
 patience_counter = 0
-
-# Modeli oluşturma
 
 model = TransformerQA(vocab_size, d_model, nhead, num_layers).to(device)
 optimizer = optim.Adam(model.parameters(), lr=1e-5)
@@ -154,8 +143,8 @@ def predict_answer(model, tokenizer, question, context, device, max_length=512):
 
         input_ids = encoding["input_ids"].to(device)
         attention_mask = encoding["attention_mask"].to(device)
-        offset_mapping = encoding["offset_mapping"].squeeze(0)  # [seq_len, 2]
-        token_type_ids = encoding["token_type_ids"].squeeze(0)  # [seq_len]
+        offset_mapping = encoding["offset_mapping"].squeeze(0)  
+        token_type_ids = encoding["token_type_ids"].squeeze(0)  
 
         start_logits, end_logits = model(input_ids, attention_mask)
         start_logits = start_logits.squeeze(0)
@@ -166,22 +155,17 @@ def predict_answer(model, tokenizer, question, context, device, max_length=512):
         start_index = context_indices[torch.argmax(start_logits[context_indices])].item()
         end_index = context_indices[torch.argmax(end_logits[context_indices])].item()
 
-        # Swap if start > end
+       
         if start_index > end_index:
             start_index, end_index = end_index, start_index
 
-        # Get character positions
         start_char = offset_mapping[start_index][0].item()
         end_char = offset_mapping[end_index][1].item()
-
-        # Bazı token'lar boş (örneğin padding) olabilir
         if start_char is None or end_char is None or start_char >= end_char:
             return "Cevap bulunamadı."
 
-        # Cevabı al
         answer = context[start_char:end_char].strip()
 
-        # Cümle tamamlanmamışsa genişletmeyi dene (nokta, virgül vs.)
         while end_char < len(context) and context[end_char] not in ".!?":
             end_char += 1
         if end_char < len(context):
