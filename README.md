@@ -25,7 +25,7 @@ This script handles training a Transformer-based QA model using PyTorch.
 post_processing_model.py
 
 This script loads the trained model and performs prediction, followed by response refinement using a LLaMA-3 model and translation into Turkish.
-🔍 Key Components:
+#### 🔍 Key Components:
 
 - Model Inference: Predicts answer spans for given questions using the same TransformerQA architecture.
 
