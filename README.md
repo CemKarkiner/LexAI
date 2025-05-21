@@ -66,7 +66,7 @@ Predictions are presented in fluent Turkish through automatic translation.
 
 ## 🗂️ Data Management
 
-The dataset have aproximatly 600 cases and 6000 different QAs. This section explains how the dataset have been created.
+The dataset contains approximately 600 cases and 6,000 unique question-answer pairs. This section explains how the dataset was created. Due to concerns about the future of the project, I am unable to share the full dataset.
 
 ### 📥 Data Collection  
 Data have been collected from "Yargıtay Emsal Karar" using web scraping techniques.
