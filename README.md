@@ -1,4 +1,4 @@
-# 🧠 Turkish Legal QA System
+# 🧠 Turkish Legal NLP Model
 
 This repository contains a custom-trained Transformer-based Question Answering (QA) system built for Turkish legal texts. The system is capable of training on a custom tokenizer and dataset, and post-processing predictions using a large language model (LLaMA 3 via Groq API) and translation to provide clearer Turkish responses.
 
