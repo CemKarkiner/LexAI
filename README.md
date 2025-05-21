@@ -81,6 +81,7 @@ The dataset was created in JSON format for better structure and easier integrati
 | Name                | Description                                                  | Type   |
 |---------------------|--------------------------------------------------------------|--------|
 | context             | Sum of a legal case from Yargıtay Emsal Karar                | String |
+| qas                 | Questions, answers and all relative data about the context   | List   |
 
 Each entry in the qas field contains the following data:
 
