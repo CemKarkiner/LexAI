@@ -78,3 +78,25 @@ Data have been collected from "Yargıtay Emsal Karar" using web scraping techniq
 
 ### 📄 Creating the Dataset  
 The dataset was created in JSON format for better structure and easier integration with NLP training pipelines.
+| Name                | Description                                                  | Type   |
+|---------------------|--------------------------------------------------------------|--------|
+| context             | Sum of a legal case from Yargıtay Emsal Karar                | String |
+
+Each entry in the qas field contains the following data:
+
+| Name                | Description                                                  | Type   |
+|---------------------|--------------------------------------------------------------|--------|
+| id                  | Each QA has own id                                           | String |
+| is_imposibble       | To identify the answer of the question is imposibble or not  | String |
+| question            | A question about thecontext                                  | String |
+| answers             | Answer of the question                                       | List   |
+
+Each answers entry in the answers field contains the following data: 
+
+| Name                | Description                                                  | Type   |
+|---------------------|--------------------------------------------------------------|--------|
+| text                | Answer of the question                                       | String |
+| answer_start        | Start point of the answer in the context                     | String |
+| answer_end          | End point of the answer in the context                       | String |
+
+
