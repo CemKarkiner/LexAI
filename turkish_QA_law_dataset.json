@@ -29,7 +29,7 @@
       {
         "id": "100003",
         "is_impossible": false,
-        "question": "Türkiye'de bir iş sözleşmesini feshetme prosedürü hangi gerekçelere dayandırılmaktadır ve bunun hukuki etkileri nelerdir??",
+        "question": "Türkiye'de bir iş sözleşmesini feshetme prosedürü hangi gerekçelere dayandırılmaktadır?",
         "answers": [
           {
             "text": "f maddesi uyarınca aynı kanunun 25/I.b maddesi uyarınca önele ilaveten altı haftalık bekleme süresi içinde işçinin iş sözleşmesini feshedemez.",
@@ -41,7 +41,7 @@
       {
         "id": "100004",
         "is_impossible": false,
-        "question": "Bir işveren geçerli bir sebep olmaksızın bir çalışanın sözleşmesini feshedebilir mi? Bu durumun yasal arka planı nedir ve nasıl yorumlanmalıdır?",
+        "question": "Bir işveren geçerli bir sebep olmaksızın bir çalışanın sözleşmesini feshedebilir mi?",
         "answers": [
           {
             "text": "İşverenin feshi, davacının yeterliliğinden kaynaklanan geçerli nedene dayandığından, davanın reddi gerekir.",
@@ -92,7 +92,7 @@
         "question": "Mahkemenin kararının işveren için sonuçları nelerdir? Bu durumun yasal arka planı nedir ve nasıl yorumlanmalıdır?",
         "answers": [
           {
-            "text": "Mahkemenin kararının BOZULARAK ORTADAN KALDIRILMASINA,2.",
+            "text": "Mahkemenin kararının BOZULARAK ORTADAN KALDIRILMASINA",
             "answer_start": 4631,
             "answer_end": 4687
           }
