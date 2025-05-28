@@ -45,8 +45,7 @@ python model_training.py
 python post_processing_model.py
 
 ### ⚙️ Requirements
-
-Install dependencies:
+If you dont install anyof them you can install dependencies from here
 
     pip install torch transformers groq deep-translator
 
