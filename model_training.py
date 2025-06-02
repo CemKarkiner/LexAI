@@ -10,7 +10,7 @@ import json
 from sklearn.metrics import f1_score
 from torch.utils.data import DataLoader, Dataset
 
-device = torch.device('cuda')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class TransformerQA(nn.Module):
     def __init__(self, vocab_size, d_model, nhead, num_layers):
@@ -29,11 +29,10 @@ class TransformerQA(nn.Module):
         position_ids = torch.arange(input_ids.size(1), device=input_ids.device).unsqueeze(0)
         x = self.embedding(input_ids) + self.pos_embedding(position_ids)
 
-
         if attention_mask is not None:
-              key_padding_mask = attention_mask == 0  # [batch, seq_len]
+            key_padding_mask = attention_mask == 0  # [batch, seq_len]
         else:
-              key_padding_mask = None
+            key_padding_mask = None
 
         x = self.transformer_encoder(x, src_key_padding_mask=key_padding_mask)
         x = self.dropout(x)
@@ -101,14 +100,13 @@ if tokenizer.pad_token is None:
 with open("final_enriched_dataset_original_format.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
-
-# Hyperparametres
+# Hyperparameters
 vocab_size = len(tokenizer) 
 d_model = 512
 nhead = 8
 num_layers = 6
 batch_size = 4
-epoch = 0
+max_epochs = 50
 patience = 5 
 best_val_loss = float("inf")
 patience_counter = 0
@@ -122,7 +120,7 @@ val_data = data[int(0.8 * len(data)):]
 train_dataset = QADataset(train_data, tokenizer)
 val_dataset = QADataset(val_data, tokenizer)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
 # F1 score calculation
 def compute_f1(pred_start, pred_end, true_start, true_end):
@@ -147,7 +145,7 @@ train_losses = []
 val_losses = []
 
 # Training Loop
-while(True):
+for epoch in range(max_epochs):
     model.train()
     total_loss = 0
 
@@ -156,17 +154,14 @@ while(True):
         attention_mask = batch["attention_mask"].to(device)
         start_pos = batch["start_positions"].to(device)
         end_pos = batch["end_positions"].to(device)
-
-
+    
         optimizer.zero_grad()
-        start_logits, end_logits = model(input_ids)
-
+        start_logits, end_logits = model(input_ids, attention_mask)  
         loss_start = loss_fn(start_logits, start_pos)
         loss_end = loss_fn(end_logits, end_pos)
         loss = (loss_start + loss_end) / 2
         loss.backward()
         optimizer.step()
-
         total_loss += loss.item()
 
     avg_train_loss = total_loss / len(train_loader)
@@ -185,9 +180,7 @@ while(True):
             start_pos = batch["start_positions"].to(device)
             end_pos = batch["end_positions"].to(device)
 
-
-            start_logits, end_logits = model(input_ids)
-
+            start_logits, end_logits = model(input_ids, attention_mask)
             loss_start = loss_fn(start_logits, start_pos)
             loss_end = loss_fn(end_logits, end_pos)
             loss = (loss_start + loss_end) / 2
@@ -217,7 +210,6 @@ while(True):
         if patience_counter >= patience:
             print("Early stopping triggered")
             break
-    epoch += 1
 
 # Stat visualization
 plt.figure(figsize=(10, 6))
