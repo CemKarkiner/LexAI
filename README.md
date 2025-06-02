@@ -8,7 +8,7 @@ This repository contains a custom-trained Transformer-based Question Answering (
 model_training.py
 
 This script handles training a Transformer-based QA model using PyTorch.
-🔍 Key Components:
+#### 🔍 Key Components:
 
 - TransformerQA: A lightweight Transformer encoder with learned positional embeddings and a final classification head for start and end token prediction.
 
@@ -25,7 +25,7 @@ This script handles training a Transformer-based QA model using PyTorch.
 post_processing_model.py
 
 This script loads the trained model and performs prediction, followed by response refinement using a LLaMA-3 model and translation into Turkish.
-🔍 Key Components:
+#### 🔍 Key Components:
 
 - Model Inference: Predicts answer spans for given questions using the same TransformerQA architecture.
 
