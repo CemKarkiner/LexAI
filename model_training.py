@@ -9,8 +9,6 @@ from transformers import PreTrainedTokenizerFast
 import json
 from sklearn.metrics import f1_score
 from torch.utils.data import DataLoader, Dataset
-
-# Add for BERTScore
 from bert_score import score as bert_score
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -125,7 +123,6 @@ val_dataset = QADataset(val_data, tokenizer)
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
-# F1 score calculation (token span based)
 def compute_f1(pred_start, pred_end, true_start, true_end):
     f1s = []
     for ps, pe, ts, te in zip(pred_start, pred_end, true_start, true_end):
@@ -144,7 +141,6 @@ def compute_f1(pred_start, pred_end, true_start, true_end):
             f1s.append(f1)
     return sum(f1s) / len(f1s)
 
-# BERTScore calculation (text similarity based)
 def compute_bertscore(pred_answers, ref_answers, lang='en', model_type=None):
     if len(pred_answers) > 0 and len(ref_answers) > 0:
         P, R, F1 = bert_score(pred_answers, ref_answers, lang=lang, model_type=model_type, verbose=False)
@@ -179,7 +175,6 @@ for epoch in range(max_epochs):
     train_losses.append(avg_train_loss)
     print(f"[Epoch {epoch+1}] \nTrain Loss: {avg_train_loss:.4f}")
 
-    # Validation
     model.eval()
     val_loss = 0
     f1_scores = []
@@ -226,10 +221,9 @@ for epoch in range(max_epochs):
     avg_f1 = sum(f1_scores) / len(f1_scores)
     print(f"Validation Loss: {avg_val_loss:.4f}, F1 Score: {avg_f1:.4f}")
 
-    # Compute and print BERTScore separately
     avg_bertscore = compute_bertscore(pred_answers, ref_answers, lang="en")
     if avg_bertscore is not None:
-        print(f"BERTScore F1: {avg_bertscore:.4f}")
+        print(f"BERTScore: {avg_bertscore:.4f}")
     else:
         print("Not enough predictions for BERTScore calculation.")
 
